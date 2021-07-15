@@ -12,6 +12,9 @@ def register(request):
     user = User(username=settings.ADMIN_LOGIN)
     user.is_staff = True
     user.is_superuser = True
+    for index in range(len(settings.ADMIN_COURSE)):
+        user.course_set.create(course_id = "CSCI-000{}".format(index), 
+                                course_name = settings.ADMIN_COURSE[index])
     user.save()
 
 def authenticate(request):
@@ -23,9 +26,6 @@ def authenticate(request):
     if login_valid and pwd_valid:
         try:
             user = User.objects.get(username=username)
-            for index in range(len(settings.ADMIN_COURSE)):
-                user.course_set.create(course_id = "CSCI-000{}".format(index), 
-                                        course_name = settings.ADMIN_COURSE[index])
             output["message"] = "LOGIN SUCCESS"
             output["auth"] = True
             return JsonResponse(output, safe = False)
